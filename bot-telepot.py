@@ -1,30 +1,24 @@
 #!/usr/bin/python
-import commands, json, requests, sys, time, telepot
-import config # configuration file
+import cfg, commands, json, requests, sys, time, telepot
 
 def makeJson(content):
-    return { "document":{ "type":"PLAIN_TEXT", "content": content } }
+    return { "document":{ "type":"PLAIN_TEXT", "content": content }}
 
-def getGcloudToken():
-    return commands.getoutput('gcloud auth print-access-token')
+def makeHeaders():
+    return {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + commands.getoutput('gcloud auth print-access-token')}
 
 def cmd_sentiment(arg):
     '''Returns sentiment polatiry and magnitute from Google Cloud Natural Language API. Takes phrase as an argument'''
-    text = arg.replace('/sentiment ','')
-    headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + getGcloudToken()}
-    r=requests.post('https://language.googleapis.com/v1beta1/documents:analyzeSentiment', headers = headers, json = makeJson(text))
+    r=requests.post('https://language.googleapis.com/v1beta1/documents:analyzeSentiment', headers = makeHeaders(), json = makeJson(arg))
     return 'Polarity: {0}, magnitude: {1}'.format(str(r.json()['documentSentiment']['polarity']), str(r.json()['documentSentiment']['magnitude']))
 
 def cmd_entities(arg):
     '''Returns JSON response from Google Cloud Natural Language API. Takes argument'''
-    text = arg.replace('/entities ','')
-    headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + getGcloudToken()}
-    r=requests.post('https://language.googleapis.com/v1beta1/documents:analyzeEntities', headers = headers, json = makeJson(text))
+    r=requests.post('https://language.googleapis.com/v1beta1/documents:analyzeEntities', headers = makeHeaders(), json = makeJson(arg))
     return r.text
 
-def cmd_count(arg):
+def cmd_count(expr):
     '''Solves simple math problems. Takes arithmetic expression as argument'''
-    expr = arg.replace('/count ','')
     if expr == '14/88': # ja-ja, an easter egg
         return 'Ein Kampf, Ein Sieg!'
     if '/' in expr and '.' not in expr:
@@ -32,7 +26,7 @@ def cmd_count(arg):
     try:
         return 'Counting: '+expr.replace('./', '/')+' = '+str(eval(expr))
     except:
-        return 'Something went wrong, check your input: '+arg
+        return 'Something went wrong, check your input: '+expr
     
 def cmd_momma(arg=None):
     '''Gives random your momma joke. No arg needed.'''
