@@ -1,5 +1,5 @@
 #!/usr/bin/python
-import commands, datetime, json, requests, sys, time, telepot
+import commands, json, requests, sys, time, telepot
 import config # configuration file
 
 def makeJson(content):
