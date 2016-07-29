@@ -68,7 +68,7 @@ def handle(msg):
         else:
             print 'Oops! Bot command '+cmdArray[0]+' is not recognized'
 
-bot = telepot.Bot(config.BOT_TOKEN)
+bot = telepot.Bot(cfg.BOT_TOKEN)
 bot.message_loop(handle)
 print ('Listening ...')
 
