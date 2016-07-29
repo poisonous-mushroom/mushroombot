@@ -19,8 +19,6 @@ def cmd_entities(arg):
 
 def cmd_count(expr):
     '''Solves simple math problems. Takes arithmetic expression as argument'''
-    if expr == '14/88': # ja-ja, an easter egg
-        return 'Ein Kampf, Ein Sieg!'
     if '/' in expr and '.' not in expr:
         expr = expr.replace('/', './')
     try:
